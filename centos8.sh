@@ -5,7 +5,7 @@ random() {
 }
 
 array=(1 2 3 4 5 6 7 8 9 0 a b c d e f)
-main_interface=$(ip route get 8.8.8.8 | awk -- '{printf $5}')
+main_interface=$(ip route get 103.161.17.1 | awk -- '{printf $5}')
 
 gen64() {
 	ip64() {
