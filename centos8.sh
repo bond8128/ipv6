@@ -23,7 +23,7 @@ install_3proxy() {
     make -f Makefile.Linux
     mkdir -p /usr/local/etc/3proxy/{bin,logs,stat}
     mv /3proxy/3proxy-0.9.3/bin/3proxy /usr/local/etc/3proxy/bin/
-    wget https://raw.githubusercontent.com/thuongtin/ipv4-ipv6-proxy/master/scripts/3proxy.service-Centos8 --output-document=/3proxy/3proxy-0.9.3/scripts/3proxy.service2
+    wget https://raw.githubusercontent.com/bond8128/ipv6/main/centos8.sh --output-document=/3proxy/3proxy-0.9.3/scripts/3proxy.service2
     cp /3proxy/3proxy-0.9.3/scripts/3proxy.service2 /usr/lib/systemd/system/3proxy.service
     systemctl link /usr/lib/systemd/system/3proxy.service
     systemctl daemon-reload
@@ -117,7 +117,7 @@ IP6=$(curl -6 -s icanhazip.com | cut -f1-4 -d':')
 echo "Internal ip = ${IP4}. Exteranl sub for ip6 = ${IP6}"
 
 FIRST_PORT=10001
-LAST_PORT=10050
+LAST_PORT=11050
 
 gen_data >$WORKDIR/data.txt
 gen_iptables >$WORKDIR/boot_iptables.sh
