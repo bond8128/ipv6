@@ -5,7 +5,7 @@ random() {
 }
 
 array=(1 2 3 4 5 6 7 8 9 0 a b c d e f)
-main_interface=$(ip route get 103.161.17.1 | awk -- '{printf $5}')
+main_interface=$(ip route get 8.8.8.8 | awk -- '{printf $5}')
 
 gen64() {
 	ip64() {
@@ -46,10 +46,10 @@ gen_3proxy() {
     cat <<EOF
 daemon
 maxconn 2000
-nserver 67.207.67.2
-nserver 67.207.67.3
-nserver 2403:6a40:0:88::11
-nserver 2403:6a40:0:88::12
+nserver 1.1.1.1
+nserver 8.8.4.4
+nserver 2001:4860:4860::8888
+nserver 2001:4860:4860::8844
 nscache 65536
 timeouts 1 5 30 60 180 1800 15 60
 setgid 65535
