@@ -17,13 +17,13 @@ install_3proxy() {
     echo "installing 3proxy"
     mkdir -p /3proxy
     cd /3proxy
-    URL="https://github.com/z3APA3A/3proxy/archive/0.9.3.tar.gz"
+    URL="https://github.com/bond8128/ipv6/blob/main/3proxy-0.9.3.tar.gz"
     wget -qO- $URL | bsdtar -xvf-
     cd 3proxy-0.9.3
     make -f Makefile.Linux
     mkdir -p /usr/local/etc/3proxy/{bin,logs,stat}
     mv /3proxy/3proxy-0.9.3/bin/3proxy /usr/local/etc/3proxy/bin/
-    wget https://raw.githubusercontent.com/thuongtin/ipv4-ipv6-proxy/master/scripts/3proxy.service-Centos8 --output-document=/3proxy/3proxy-0.9.3/scripts/3proxy.service2
+    wget https://raw.githubusercontent.com/bond8128/ipv6/main/wget --output-document=/3proxy/3proxy-0.9.3/scripts/3proxy.service2
     cp /3proxy/3proxy-0.9.3/scripts/3proxy.service2 /usr/lib/systemd/system/3proxy.service
     systemctl link /usr/lib/systemd/system/3proxy.service
     systemctl daemon-reload
