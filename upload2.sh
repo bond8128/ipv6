@@ -15,6 +15,29 @@ gen64() {
 }
 
 
+gen_3proxy() {
+    cat <<EOF
+daemon
+maxconn 2000
+nserver 1.1.1.1
+nserver 1.0.0.1
+nserver 2606:4700:4700::1111
+nserver 2606:4700:4700::1001
+nscache 65536
+timeouts 1 5 30 60 180 1800 15 60
+setgid 65535
+setuid 65535
+stacksize 6291456 
+flush
+auth strong
+users $(awk -F "/" 'BEGIN{ORS="";} {print $1 ":CL:" $2 " "}' ${WORKDATA})
+$(awk -F "/" '{print "auth strong\n" \
+"allow " $1 "\n" \
+"proxy -6 -n -a -p" $4 " -i" $3 " -e"$5"\n" \
+"flush\n"}' ${WORKDATA})
+EOF
+}
+
 gen_proxy_file_for_user() {
     cat >proxy.txt <<EOF
 $(awk -F "/" '{print $3 ":" $4 ":" $1 ":" $2 }' ${WORKDATA})
@@ -32,8 +55,40 @@ upload_proxy() {
     echo "Password: ${PASS}"
 
 }
+gen_data() {
+    seq $FIRST_PORT $LAST_PORT | while read port; do
+        echo "$(random)/$(random)/$IP4/$port/$(gen64 $IP6)"
+    done
+}
 
+gen_iptables() {
+    cat <<EOF
+    $(awk -F "/" '{print "iptables -I INPUT -p tcp --dport " $4 "  -m state --state NEW -j ACCEPT"}' ${WORKDATA}) 
+EOF
+}
 
+gen_ifconfig() {
+    cat <<EOF
+$(awk -F "/" '{print "ifconfig '$main_interface' inet6 add " $5 "/64"}' ${WORKDATA})
+EOF
+}
+echo "installing apps"
+yum -y install gcc net-tools bsdtar zip make >/dev/null
+
+install_3proxy
+
+echo "working folder = /home/proxy-installer"
+WORKDIR="/home/proxy-installer"
+WORKDATA="${WORKDIR}/data.txt"
+mkdir $WORKDIR && cd $_
+
+IP4=$(curl -4 -s icanhazip.com)
+IP6=$(curl -6 -s icanhazip.com | cut -f1-4 -d':')
+
+echo "Internal ip = ${IP4}. Exteranl sub for ip6 = ${IP6}"
+
+FIRST_PORT=40001
+LAST_PORT=41000
 
 gen_data >$WORKDIR/data.txt
 gen_iptables >$WORKDIR/boot_iptables.sh
